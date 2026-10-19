@@ -15,6 +15,9 @@ describe("normalizeTask", () => {
       dueAt: null,
       remindBeforeMin: 0,
       reminded: false,
+      color: "none",
+      note: "",
+      completedAt: null,
     });
   });
 
@@ -38,9 +41,24 @@ describe("normalizeTask", () => {
   });
 
   it("field sai kiểu -> dùng giá trị mặc định", () => {
-    const task = normalizeTask({ dueAt: "abc", remindBeforeMin: "5", completed: 1 });
+    const task = normalizeTask({
+      dueAt: "abc",
+      remindBeforeMin: "5",
+      completed: 1,
+      color: "hong",
+      completedAt: "homqua",
+    });
     expect(task.dueAt).toBeNull();
     expect(task.remindBeforeMin).toBe(0);
     expect(task.completed).toBe(false);
+    expect(task.color).toBe("none");
+    expect(task.completedAt).toBeNull();
+  });
+
+  it("color hợp lệ + note -> giữ nguyên", () => {
+    const task = normalizeTask({ color: "red", note: "Làm gấp", completedAt: 1_234 });
+    expect(task.color).toBe("red");
+    expect(task.note).toBe("Làm gấp");
+    expect(task.completedAt).toBe(1_234);
   });
 });

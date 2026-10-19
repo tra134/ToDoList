@@ -58,6 +58,24 @@ export function isOverdue(task: Task, now: number): boolean {
   return task.dueAt !== null && !task.completed && task.dueAt < now;
 }
 
+/** Hai timestamp có cùng ngày (giờ địa phương)? */
+export function isSameDay(a: number, b: number): boolean {
+  const da = new Date(a);
+  const db = new Date(b);
+  return (
+    da.getFullYear() === db.getFullYear() &&
+    da.getMonth() === db.getMonth() &&
+    da.getDate() === db.getDate()
+  );
+}
+
+/** Hai timestamp có cùng tháng/năm (giờ địa phương)? */
+export function isSameMonth(a: number, b: number): boolean {
+  const da = new Date(a);
+  const db = new Date(b);
+  return da.getFullYear() === db.getFullYear() && da.getMonth() === db.getMonth();
+}
+
 /** Sắp tới hạn: chưa quá hạn và còn <= 24 giờ. */
 export function isDueSoon(task: Task, now: number): boolean {
   if (task.dueAt === null || task.completed) return false;

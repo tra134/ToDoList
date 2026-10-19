@@ -2,7 +2,10 @@
 
 App ToDoList học **TypeScript + React**: thêm/sửa/xoá task, lọc theo route,
 đặt deadline theo **múi giờ của máy bạn** và nhắc trước hạn (trong app +
-thông báo hệ thống). Dữ liệu lưu ở `localStorage`, không cần backend.
+thông báo hệ thống). Có **dashboard thống kê** (biểu đồ tròn tỉ lệ hoàn thành +
+biểu đồ đường 7 ngày), **màu kí hiệu + ghi chú** cho từng task, **phân trang**
+khi list dài. Dữ liệu lưu ở `localStorage`, không cần backend.
+Nền dùng ảnh `background.png` với gam sáng, layout căn giữa.
 
 Xem đặc tả chi tiết từng phase trong [`plan.md`](./plan.md).
 

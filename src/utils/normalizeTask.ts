@@ -1,4 +1,5 @@
-import type { Task } from "../types/task";
+import { TASK_COLOR_IDS } from "../constants/config";
+import type { Task, TaskColorId } from "../types/task";
 
 /**
  * Điền giá trị mặc định cho task cũ còn thiếu field trong localStorage.
@@ -19,5 +20,12 @@ export function normalizeTask(input: unknown): Task {
     remindBeforeMin:
       typeof raw.remindBeforeMin === "number" ? raw.remindBeforeMin : 0,
     reminded: raw.reminded === true,
+    color:
+      typeof raw.color === "string" &&
+      (TASK_COLOR_IDS as readonly string[]).includes(raw.color)
+        ? (raw.color as TaskColorId)
+        : "none",
+    note: typeof raw.note === "string" ? raw.note : "",
+    completedAt: typeof raw.completedAt === "number" ? raw.completedAt : null,
   };
 }

@@ -49,7 +49,7 @@ describe("useTasks", () => {
     expect(result.current.tasks[0].reminded).toBe(false);
   });
 
-  it("toggle -> đổi trạng thái completed", () => {
+  it("toggle -> đổi trạng thái completed và ghi completedAt", () => {
     const { result } = setup();
     act(() => {
       result.current.addTask("Đi chợ");
@@ -60,11 +60,45 @@ describe("useTasks", () => {
       result.current.toggleTask(id);
     });
     expect(result.current.tasks[0].completed).toBe(true);
+    expect(result.current.tasks[0].completedAt).toBeTypeOf("number");
 
     act(() => {
       result.current.toggleTask(id);
     });
     expect(result.current.tasks[0].completed).toBe(false);
+    expect(result.current.tasks[0].completedAt).toBeNull();
+  });
+
+  it("addTask kèm màu + ghi chú", () => {
+    const { result } = setup();
+
+    act(() => {
+      result.current.addTask("Task gấp", null, 0, "red", "Làm ngay hôm nay");
+    });
+
+    expect(result.current.tasks[0].color).toBe("red");
+    expect(result.current.tasks[0].note).toBe("Làm ngay hôm nay");
+  });
+
+  it("setMeta -> đổi màu và ghi chú", () => {
+    const { result } = setup();
+    act(() => {
+      result.current.addTask("Có meta");
+    });
+    const id = result.current.tasks[0].id;
+
+    act(() => {
+      result.current.setMeta(id, { color: "blue", note: "Gặp khách hàng" });
+    });
+
+    expect(result.current.tasks[0].color).toBe("blue");
+    expect(result.current.tasks[0].note).toBe("Gặp khách hàng");
+
+    act(() => {
+      result.current.setMeta(id, { note: "" });
+    });
+    expect(result.current.tasks[0].note).toBe("");
+    expect(result.current.tasks[0].color).toBe("blue"); // giữ nguyên màu
   });
 
   it("delete -> task biến mất", () => {

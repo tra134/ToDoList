@@ -14,6 +14,7 @@ function setup(taskOverrides: Partial<Parameters<typeof makeTask>[0]> = {}) {
     onDelete: vi.fn(),
     onEdit: vi.fn(),
     onSetDeadline: vi.fn(),
+    onSetMeta: vi.fn(),
   };
   const utils = render(
     <TaskItem
@@ -23,6 +24,7 @@ function setup(taskOverrides: Partial<Parameters<typeof makeTask>[0]> = {}) {
       onDelete={handlers.onDelete}
       onEdit={handlers.onEdit}
       onSetDeadline={handlers.onSetDeadline}
+      onSetMeta={handlers.onSetMeta}
     />,
   );
   return { task, ...handlers, ...utils };
@@ -119,5 +121,51 @@ describe("TaskItem", () => {
 
     expect(onSetDeadline).toHaveBeenCalledTimes(1);
     expect(onSetDeadline).toHaveBeenCalledWith(task.id, next, task.remindBeforeMin);
+  });
+
+  it("task có ghi chú -> hiện ghi chú dưới tên task", () => {
+    setup({ title: "Có ghi chú", note: "Đừng quên mang hồ sơ" });
+
+    expect(screen.getByText("Đừng quên mang hồ sơ")).toBeInTheDocument();
+  });
+
+  it("task màu đỏ -> sọc đỏ bên trái; task không màu -> không sọc", () => {
+    const { container } = setup({ color: "red" });
+    const item = container.querySelector<HTMLElement>(".task-item");
+    expect(item?.style.borderLeftColor).toBe("rgb(229, 72, 77)");
+
+    const plain = setup({ color: "none" });
+    const plainItem = plain.container.querySelector<HTMLElement>(".task-item");
+    expect(plainItem?.style.borderLeftColor).toBe("transparent");
+  });
+
+  it("panel 'Ghi chú': lưu note -> onSetMeta(id, { note })", async () => {
+    const { task, onSetMeta } = setup({ title: "Task meta", note: "Cũ" });
+    const user = userEvent.setup();
+
+    await user.click(
+      screen.getByRole("button", { name: "Sửa màu và ghi chú của Task meta" }),
+    );
+    const textarea = screen.getByRole("textbox", { name: "Ghi chú" });
+    await user.clear(textarea);
+    await user.type(textarea, "Ghi chú mới");
+    await user.click(screen.getByRole("button", { name: "Lưu" }));
+
+    expect(onSetMeta).toHaveBeenCalledTimes(1);
+    expect(onSetMeta).toHaveBeenCalledWith(task.id, { note: "Ghi chú mới" });
+    // Panel đóng sau khi lưu
+    expect(screen.queryByRole("textbox", { name: "Ghi chú" })).toBeNull();
+  });
+
+  it("panel 'Ghi chú': bấm ô màu -> onSetMeta(id, { color }) ngay", async () => {
+    const { task, onSetMeta } = setup({ title: "Task màu" });
+    const user = userEvent.setup();
+
+    await user.click(
+      screen.getByRole("button", { name: "Sửa màu và ghi chú của Task màu" }),
+    );
+    await user.click(screen.getByRole("button", { name: "Cần làm gấp" }));
+
+    expect(onSetMeta).toHaveBeenCalledWith(task.id, { color: "red" });
   });
 });

@@ -1,8 +1,13 @@
 import { useCallback, useMemo } from "react";
 import { STORAGE_KEY } from "../constants/config";
-import type { Task } from "../types/task";
+import type { Task, TaskColorId } from "../types/task";
 import { normalizeTask } from "../utils/normalizeTask";
 import { useLocalStorage } from "./useLocalStorage";
+
+export interface TaskMetaPatch {
+  color?: TaskColorId;
+  note?: string;
+}
 
 export interface UseTasksResult {
   tasks: Task[];
@@ -10,11 +15,14 @@ export interface UseTasksResult {
     title: string,
     dueAt?: number | null,
     remindBeforeMin?: number,
+    color?: TaskColorId,
+    note?: string,
   ) => void;
   toggleTask: (id: string) => void;
   deleteTask: (id: string) => void;
   editTask: (id: string, newTitle: string) => void;
   setDeadline: (id: string, dueAt: number | null, remindBeforeMin: number) => void;
+  setMeta: (id: string, patch: TaskMetaPatch) => void;
   markReminded: (id: string) => void;
 }
 
@@ -42,7 +50,13 @@ export function useTasks(): UseTasksResult {
   );
 
   const addTask = useCallback(
-    (title: string, dueAt: number | null = null, remindBeforeMin = 0): void => {
+    (
+      title: string,
+      dueAt: number | null = null,
+      remindBeforeMin = 0,
+      color: TaskColorId = "none",
+      note = "",
+    ): void => {
       const trimmed = title.trim();
       if (trimmed === "") return;
       const task: Task = {
@@ -53,16 +67,28 @@ export function useTasks(): UseTasksResult {
         dueAt: dueAt ?? null,
         remindBeforeMin,
         reminded: false,
+        color,
+        note: note.trim(),
+        completedAt: null,
       };
       update((list) => [...list, task]);
     },
     [update],
   );
 
+  // Đánh dấu xong -> ghi lại thời điểm hoàn thành để thống kê theo ngày/tháng.
   const toggleTask = useCallback(
     (id: string): void => {
       update((list) =>
-        list.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
+        list.map((t) =>
+          t.id === id
+            ? {
+                ...t,
+                completed: !t.completed,
+                completedAt: !t.completed ? Date.now() : null,
+              }
+            : t,
+        ),
       );
     },
     [update],
@@ -100,6 +126,15 @@ export function useTasks(): UseTasksResult {
     [update],
   );
 
+  const setMeta = useCallback(
+    (id: string, patch: TaskMetaPatch): void => {
+      update((list) =>
+        list.map((t) => (t.id === id ? { ...t, ...patch } : t)),
+      );
+    },
+    [update],
+  );
+
   const markReminded = useCallback(
     (id: string): void => {
       update((list) =>
@@ -116,6 +151,7 @@ export function useTasks(): UseTasksResult {
     deleteTask,
     editTask,
     setDeadline,
+    setMeta,
     markReminded,
   };
 }

@@ -4,6 +4,8 @@
   border-radius: var(--radius);
   padding: 1rem;
   margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  animation: fade-up 0.35s ease both;
 }
 
 .task-form__label {
@@ -14,38 +16,100 @@
   margin-bottom: 0.4rem;
 }
 
+/* Input + nút Thêm một hàng; cao bằng ô tick (2rem) để thẳng hàng */
 .task-form__row {
   display: flex;
   gap: 0.5rem;
+  align-items: stretch;
 }
 
 .task-form__input {
   flex: 1;
+  min-width: 0;
   font: inherit;
-  padding: 0.55rem 0.7rem;
+  padding: 0 0.8rem;
+  height: 2.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--text);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.task-form__input:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
+}
+
+.task-form__submit {
+  font: inherit;
+  font-weight: 600;
+  height: 2.4rem;
+  padding: 0 1.1rem;
+  border: none;
+  border-radius: var(--radius);
+  background: var(--primary);
+  color: #fff;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease;
+}
+
+.task-form__submit:hover {
+  background: var(--primary-dark);
+}
+
+.task-form__submit:active {
+  transform: scale(0.97);
+}
+
+.task-form__submit:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.task-form__meta {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-top: 0.7rem;
+  flex-wrap: wrap;
+}
+
+.task-form__meta-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.task-form__meta-group--note {
+  flex: 1;
+  min-width: 180px;
+}
+
+.task-form__meta-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.task-form__note {
+  font: inherit;
+  font-size: 0.88rem;
+  padding: 0 0.6rem;
+  height: 2.1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--bg);
   color: var(--text);
 }
 
-.task-form__input:focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 1px;
-}
-
-.task-form__submit {
-  font: inherit;
-  font-weight: 600;
-  padding: 0.55rem 1rem;
-  border: none;
-  border-radius: var(--radius);
-  background: var(--primary);
-  color: #fff;
-  cursor: pointer;
-  transition: filter 0.15s ease;
-}
-
-.task-form__submit:hover {
-  filter: brightness(1.1);
+.task-form__note:focus-visible {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 18%, transparent);
 }

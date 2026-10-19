@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import type { ChangeEvent, KeyboardEvent } from "react";
-import type { Task } from "../../types/task";
+import { TASK_COLOR_HEX } from "../../constants/config";
+import type { Task, TaskColorId } from "../../types/task";
 import { DeadlineBadge } from "../DeadlineBadge/DeadlineBadge";
 import { DeadlinePicker } from "../DeadlinePicker/DeadlinePicker";
+import { ColorSwatches } from "../ColorSwatches/ColorSwatches";
 import "./TaskItem.css";
 
 interface TaskItemProps {
@@ -12,6 +14,7 @@ interface TaskItemProps {
   onDelete: (id: string) => void;
   onEdit: (id: string, newTitle: string) => void;
   onSetDeadline: (id: string, dueAt: number | null, remindBeforeMin: number) => void;
+  onSetMeta: (id: string, patch: { color?: TaskColorId; note?: string }) => void;
 }
 
 export function TaskItem({
@@ -21,10 +24,13 @@ export function TaskItem({
   onDelete,
   onEdit,
   onSetDeadline,
+  onSetMeta,
 }: TaskItemProps) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editText, setEditText] = useState<string>(task.title);
   const [showDeadlineEdit, setShowDeadlineEdit] = useState<boolean>(false);
+  const [showMetaEdit, setShowMetaEdit] = useState<boolean>(false);
+  const [noteDraft, setNoteDraft] = useState<string>(task.note);
   // Chống gọi onEdit 2 lần (Enter rồI blur khi input bị gỡ đi).
   const closedRef = useRef<boolean>(false);
 
@@ -58,8 +64,20 @@ export function TaskItem({
     }
   };
 
+  const toggleMetaEditor = (): void => {
+    setNoteDraft(task.note);
+    setShowMetaEdit((v) => !v);
+    setShowDeadlineEdit(false);
+  };
+
+  const stripeColor =
+    task.color === "none" ? "transparent" : TASK_COLOR_HEX[task.color];
+
   return (
-    <li className={`task-item${task.completed ? " task-item--done" : ""}`}>
+    <li
+      className={`task-item${task.completed ? " task-item--done" : ""}`}
+      style={{ borderLeftColor: stripeColor }}
+    >
       <div className="task-item__main">
         <input
           className="task-item__check"
@@ -93,9 +111,11 @@ export function TaskItem({
             </span>
           )}
 
-          {task.dueAt !== null && (
-            <DeadlineBadge task={task} now={now} />
+          {task.note !== "" && (
+            <p className="task-item__note">{task.note}</p>
           )}
+
+          {task.dueAt !== null && <DeadlineBadge task={task} now={now} />}
         </div>
 
         <div className="task-item__actions">
@@ -104,9 +124,21 @@ export function TaskItem({
             className="task-item__btn task-item__btn--deadline"
             aria-label={`Sửa hạn của ${task.title}`}
             aria-expanded={showDeadlineEdit}
-            onClick={() => setShowDeadlineEdit((v) => !v)}
+            onClick={() => {
+              setShowDeadlineEdit((v) => !v);
+              setShowMetaEdit(false);
+            }}
           >
             Hạn
+          </button>
+          <button
+            type="button"
+            className="task-item__btn task-item__btn--meta"
+            aria-label={`Sửa màu và ghi chú của ${task.title}`}
+            aria-expanded={showMetaEdit}
+            onClick={toggleMetaEditor}
+          >
+            Ghi chú
           </button>
           <button
             type="button"
@@ -127,6 +159,52 @@ export function TaskItem({
             onSetDeadline(task.id, dueAt, remindBeforeMin)
           }
         />
+      )}
+
+      {showMetaEdit && (
+        <div className="task-item__meta-editor">
+          <div className="task-item__meta-row">
+            <span className="task-item__meta-label">Màu</span>
+            <ColorSwatches
+              value={task.color}
+              onChange={(color) => onSetMeta(task.id, { color })}
+            />
+          </div>
+          <div className="task-item__meta-row">
+            <label className="task-item__meta-label" htmlFor={`note-${task.id}`}>
+              Ghi chú
+            </label>
+            <textarea
+              id={`note-${task.id}`}
+              className="task-item__note-input"
+              rows={2}
+              placeholder="Thêm ghi chú cho task..."
+              value={noteDraft}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setNoteDraft(e.target.value)
+              }
+            />
+          </div>
+          <div className="task-item__meta-actions">
+            <button
+              type="button"
+              className="task-item__btn"
+              onClick={() => {
+                onSetMeta(task.id, { note: noteDraft.trim() });
+                setShowMetaEdit(false);
+              }}
+            >
+              Lưu
+            </button>
+            <button
+              type="button"
+              className="task-item__btn"
+              onClick={() => setShowMetaEdit(false)}
+            >
+              Đóng
+            </button>
+          </div>
+        </div>
       )}
     </li>
   );

@@ -10,6 +10,9 @@ export function makeTask(overrides: Partial<Task> = {}): Task {
     dueAt: null,
     remindBeforeMin: 0,
     reminded: false,
+    color: "none",
+    note: "",
+    completedAt: null,
     ...overrides,
   };
 }

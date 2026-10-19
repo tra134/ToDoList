@@ -35,17 +35,18 @@ svg {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
-/* ---------- Biến màu ---------- */
+/* ---------- Biến màu: gam sáng, một màu chủ đạo, không pha trộn loè loẹt ---------- */
 :root {
-  --bg: #f4f6fb;
+  --bg: #f5f6fa;
   --surface: #ffffff;
-  --text: #1f2430;
+  --text: #232833;
   --muted: #6b7280;
-  --border: #e2e6ee;
+  --border: #e4e7ef;
 
   --primary: #3b6ef6;
   --primary-dark: #2f57c9;
@@ -57,22 +58,26 @@ select {
   --success: #067647;
   --badge-normal-bg: #f1f3f8;
 
-  --radius: 10px;
-  --shadow: 0 1px 3px rgb(15 23 42 / 8%);
+  --radius: 12px;
+  --shadow: 0 1px 3px rgb(15 23 42 / 7%);
 }
 
-/* ---------- Layout ---------- */
+/* ---------- Nền: ảnh background.png + lớp phủ trắng mỏng cho gam sáng ---------- */
 body {
-  background:
-    radial-gradient(circle at 10% 0%, #e8edff 0%, transparent 45%),
-    var(--bg);
+  background-color: var(--bg);
+  background-image: linear-gradient(rgb(247 248 252 / 82%), rgb(247 248 252 / 88%)),
+    url("/background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
   color: var(--text);
 }
 
+/* ---------- Layout căn giữa ---------- */
 .app {
-  max-width: 560px;
+  max-width: 660px;
   margin: 0 auto;
-  padding: 1.5rem 1rem 3rem;
+  padding: 1.6rem 1rem 3rem;
 }
 
 .app__header {
@@ -85,8 +90,16 @@ body {
 }
 
 .app__title {
-  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.45rem;
   letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.app__logo {
+  color: var(--primary);
 }
 
 .task-page {
@@ -99,6 +112,7 @@ body {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
+  box-shadow: var(--shadow);
 }
 
 .not-found h2 {
@@ -112,4 +126,26 @@ body {
 
 .not-found a {
   color: var(--primary);
+}
+
+/* ---------- Animation dùng chung ---------- */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

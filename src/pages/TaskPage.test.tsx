@@ -101,4 +101,19 @@ describe("TaskPage (integration)", () => {
 
     expect(screen.getByText("Task cần nhớ")).toBeInTheDocument();
   });
+
+  it("list dài hơn PAGE_SIZE -> hiện phân trang", () => {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(
+        Array.from({ length: 10 }, (_, i) => makeTask({ title: `Task số ${i + 1}` })),
+      ),
+    );
+
+    renderWithRouter(<App />, "/");
+
+    expect(screen.getByText("Trang 1 / 2")).toBeInTheDocument();
+    expect(screen.getByText("Task số 1")).toBeInTheDocument();
+    expect(screen.queryByText("Task số 9")).toBeNull(); // nằm ở trang 2
+  });
 });

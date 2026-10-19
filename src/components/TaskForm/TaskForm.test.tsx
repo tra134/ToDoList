@@ -13,7 +13,7 @@ describe("TaskForm", () => {
     await user.type(input, "  Mua sữa  {Enter}");
 
     expect(onAdd).toHaveBeenCalledTimes(1);
-    expect(onAdd).toHaveBeenLastCalledWith("Mua sữa", null, 0);
+    expect(onAdd).toHaveBeenLastCalledWith("Mua sữa", null, 0, "none", "");
     expect(input).toHaveValue(""); // reset sau khi thêm
   });
 
@@ -36,7 +36,7 @@ describe("TaskForm", () => {
     await user.click(screen.getByRole("button", { name: "Thêm" }));
 
     expect(onAdd).toHaveBeenCalledTimes(1);
-    expect(onAdd).toHaveBeenLastCalledWith("Task bấm nút", null, 0);
+    expect(onAdd).toHaveBeenLastCalledWith("Task bấm nút", null, 0, "none", "");
   });
 
   it("chọn deadline -> onAdd nhận đúng timestamp (giờ địa phương)", async () => {
@@ -54,6 +54,8 @@ describe("TaskForm", () => {
       "Họp team",
       Date.UTC(2026, 10, 5, 2, 30),
       0,
+      "none",
+      "",
     );
   });
 
@@ -72,6 +74,44 @@ describe("TaskForm", () => {
       "Nhắc tôi",
       Date.UTC(2026, 10, 5, 2, 30),
       30,
+      "none",
+      "",
+    );
+  });
+
+  it("chọn màu 'Cần làm gấp' -> onAdd nhận color = 'red'", async () => {
+    const onAdd = vi.fn();
+    const user = userEvent.setup();
+    render(<TaskForm onAdd={onAdd} />);
+
+    await user.click(screen.getByRole("button", { name: "Cần làm gấp" }));
+    await user.type(screen.getByLabelText("Thêm task mới"), "Khẩn cấp{Enter}");
+
+    expect(onAdd).toHaveBeenLastCalledWith("Khẩn cấp", null, 0, "red", "");
+  });
+
+  it("nhập ghi chú -> onAdd nhận note; thêm xong thì reset màu + ghi chú", async () => {
+    const onAdd = vi.fn();
+    const user = userEvent.setup();
+    render(<TaskForm onAdd={onAdd} />);
+
+    await user.click(screen.getByRole("button", { name: "Ý tưởng" }));
+    await user.type(screen.getByLabelText("Ghi chú"), "Ý tưởng hay ho");
+    await user.type(screen.getByLabelText("Thêm task mới"), "Sản phẩm mới{Enter}");
+
+    expect(onAdd).toHaveBeenLastCalledWith(
+      "Sản phẩm mới",
+      null,
+      0,
+      "purple",
+      "Ý tưởng hay ho",
+    );
+
+    // Reset sau khi thêm
+    expect(screen.getByLabelText("Ghi chú")).toHaveValue("");
+    expect(screen.getByRole("button", { name: "Không màu" })).toHaveAttribute(
+      "aria-pressed",
+      "true",
     );
   });
 });

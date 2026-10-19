@@ -1,5 +1,6 @@
 import { FilterNav } from "../components/FilterNav/FilterNav";
 import { Footer } from "../components/Footer/Footer";
+import { StatsDashboard } from "../components/StatsDashboard/StatsDashboard";
 import { TaskForm } from "../components/TaskForm/TaskForm";
 import { TaskList } from "../components/TaskList/TaskList";
 import type { UseTasksResult } from "../hooks/useTasks";
@@ -21,6 +22,7 @@ export function TaskPage({
   deleteTask,
   editTask,
   setDeadline,
+  setMeta,
 }: TaskPageProps) {
   const visible = filterTasks(tasks, filter, now);
   const remaining = filterTasks(tasks, "active", now).length;
@@ -28,6 +30,7 @@ export function TaskPage({
 
   return (
     <main className="task-page">
+      <StatsDashboard tasks={tasks} now={now} />
       <TaskForm onAdd={addTask} />
       <FilterNav />
       <TaskList
@@ -37,6 +40,7 @@ export function TaskPage({
         onDelete={deleteTask}
         onEdit={editTask}
         onSetDeadline={setDeadline}
+        onSetMeta={setMeta}
       />
       <Footer remaining={remaining} overdue={overdue} />
     </main>
