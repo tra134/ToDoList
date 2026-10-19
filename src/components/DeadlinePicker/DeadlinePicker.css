@@ -1,0 +1,34 @@
+.deadline-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.deadline-picker__label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.deadline-picker__input,
+.deadline-picker__select {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.deadline-picker__input:focus-visible,
+.deadline-picker__select:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 1px;
+}
+
+.deadline-picker__tz {
+  margin: 0;
+  font-size: 0.72rem;
+  color: var(--muted);
+}

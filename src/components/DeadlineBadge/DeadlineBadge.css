@@ -1,0 +1,33 @@
+.deadline-badge {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+  border: 1px solid transparent;
+}
+
+.deadline-badge__time {
+  font-weight: 600;
+}
+
+.deadline-badge--normal {
+  background: var(--badge-normal-bg);
+  color: var(--muted);
+  border-color: var(--border);
+}
+
+.deadline-badge--soon {
+  background: var(--warning-bg);
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
+.deadline-badge--overdue {
+  background: var(--danger-bg);
+  color: #fff;
+  border-color: var(--danger);
+}
