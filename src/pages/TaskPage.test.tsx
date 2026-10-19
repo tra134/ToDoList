@@ -23,7 +23,12 @@ describe("TaskPage (integration)", () => {
     });
     await user.click(screen.getByRole("button", { name: "Thêm" }));
 
-    expect(await screen.findByText("Làm báo cáo")).toBeInTheDocument();
+    // Scope trong trang chính (sidebar cũng liệt kê việc hôm nay).
+    const page = document.querySelector(".today-page");
+    expect(page).not.toBeNull();
+    expect(
+      await within(page as HTMLElement).findByText("Làm báo cáo"),
+    ).toBeInTheDocument();
     expect(document.querySelector(".deadline-badge")).toBeInTheDocument();
     expect(document.querySelector(".deadline-badge--soon")).toBeInTheDocument();
   });
@@ -54,9 +59,13 @@ describe("TaskPage (integration)", () => {
 
     renderWithRouter(<App />, "/overdue");
 
-    expect(screen.getByText("Task quá hạn")).toBeInTheDocument();
-    expect(screen.queryByText("Task bình thường")).toBeNull();
-    expect(screen.queryByText("Task đã xong")).toBeNull();
+    // Scope trong trang (sidebar cũng liệt kê "Task quá hạn" + "Task bình thường").
+    const page = document.querySelector(".task-page");
+    expect(page).not.toBeNull();
+    const scope = within(page as HTMLElement);
+    expect(scope.getByText("Task quá hạn")).toBeInTheDocument();
+    expect(scope.queryByText("Task bình thường")).toBeNull();
+    expect(scope.queryByText("Task đã xong")).toBeNull();
   });
 
   it("vào /active chỉ thấy task chưa xong", () => {
@@ -97,12 +106,16 @@ describe("TaskPage (integration)", () => {
     const first = renderWithRouter(<App />);
 
     await user.type(screen.getByLabelText("Thêm task mới"), "Task cần nhớ{Enter}");
-    expect(screen.getByText("Task cần nhớ")).toBeInTheDocument();
+    const page = document.querySelector(".today-page");
+    expect(within(page as HTMLElement).getByText("Task cần nhớ")).toBeInTheDocument();
 
     first.unmount(); // như F5
     renderWithRouter(<App />);
 
-    expect(screen.getByText("Task cần nhớ")).toBeInTheDocument();
+    const pageAgain = document.querySelector(".today-page");
+    expect(
+      within(pageAgain as HTMLElement).getByText("Task cần nhớ"),
+    ).toBeInTheDocument();
   });
 
   it("list dài hơn PAGE_SIZE -> hiện phân trang", () => {
@@ -116,7 +129,10 @@ describe("TaskPage (integration)", () => {
     renderWithRouter(<App />, "/");
 
     expect(screen.getByText("Trang 1 / 2")).toBeInTheDocument();
-    expect(screen.getByText("Task số 1")).toBeInTheDocument();
-    expect(screen.queryByText("Task số 9")).toBeNull(); // nằm ở trang 2
+    // Scope trong trang: sidebar liệt kê cả task chưa xếp lịch, không phân trang.
+    const page = document.querySelector(".today-page");
+    const scope = within(page as HTMLElement);
+    expect(scope.getByText("Task số 1")).toBeInTheDocument();
+    expect(scope.queryByText("Task số 9")).toBeNull(); // nằm ở trang 2
   });
 });

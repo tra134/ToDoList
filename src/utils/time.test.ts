@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { makeTask } from "../test/factories";
 import {
+  addDays,
   formatDeadline,
   formatTimeLeft,
   fromInputValue,
@@ -8,6 +9,9 @@ import {
   getUserTimeZone,
   isDueSoon,
   isOverdue,
+  startOfDay,
+  startOfMonth,
+  startOfWeek,
   toInputValue,
 } from "./time";
 
@@ -117,5 +121,37 @@ describe("formatTimeLeft", () => {
   it("quá khứ -> 'quá hạn …'", () => {
     expect(formatTimeLeft(now - 2 * 86_400_000, now)).toBe("quá hạn 2 ngày");
     expect(formatTimeLeft(now - 90 * 60_000, now)).toBe("quá hạn 2 giờ");
+  });
+});
+
+// TZ test = Asia/Ho_Chi_Minh (UTC+7, không có DST) -> dùng ngày giờ địa phương cố định.
+describe("startOfDay / startOfWeek / startOfMonth / addDays", () => {
+  const ts = new Date(2026, 9, 14, 15, 30).getTime(); // Thứ 4, 14/10/2026 15:30
+
+  it("startOfDay -> 00:00 cùng ngày", () => {
+    expect(startOfDay(ts)).toBe(new Date(2026, 9, 14, 0, 0, 0, 0).getTime());
+  });
+
+  it("startOfWeek -> Thứ 2 của tuần (14/10 là T4 -> về 12/10)", () => {
+    expect(startOfWeek(ts)).toBe(new Date(2026, 9, 12, 0, 0, 0, 0).getTime());
+  });
+
+  it("startOfWeek với Chủ nhật -> về Thứ 2 cùng tuần", () => {
+    const sunday = new Date(2026, 9, 18, 9, 0).getTime(); // CN 18/10
+    expect(startOfWeek(sunday)).toBe(new Date(2026, 9, 12, 0, 0, 0, 0).getTime());
+  });
+
+  it("startOfMonth -> mùng 1 cùng tháng", () => {
+    expect(startOfMonth(ts)).toBe(new Date(2026, 9, 1, 0, 0, 0, 0).getTime());
+  });
+
+  it("addDays qua tháng/năm vẫn đúng lịch", () => {
+    expect(addDays(new Date(2026, 9, 30).getTime(), 3)).toBe(
+      new Date(2026, 10, 2).getTime(),
+    );
+    expect(addDays(new Date(2025, 11, 31).getTime(), 1)).toBe(
+      new Date(2026, 0, 1).getTime(),
+    );
+    expect(addDays(ts, -14)).toBe(new Date(2026, 8, 30, 15, 30).getTime());
   });
 });

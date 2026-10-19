@@ -1,4 +1,5 @@
 import { screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import App from "./App";
 import { renderWithRouter } from "./test/renderWithRouter";
@@ -52,5 +53,21 @@ describe("App routing", () => {
 
     renderWithRouter(<App />, "/completed");
     expect(document.querySelector(".task-form")).toBeInTheDocument();
+  });
+
+  it("nút Thống kê trên taskbar mở modal bar chart, đóng lại được", async () => {
+    const user = userEvent.setup();
+    renderWithRouter(<App />, "/");
+
+    expect(screen.queryByRole("dialog")).toBeNull();
+
+    await user.click(screen.getByRole("button", { name: "Thống kê" }));
+    expect(
+      screen.getByRole("dialog", { name: "Thống kê công việc" }),
+    ).toBeInTheDocument();
+    expect(document.querySelectorAll(".bar-chart").length).toBeGreaterThan(0);
+
+    await user.click(screen.getByRole("button", { name: "Đóng thống kê" }));
+    expect(screen.queryByRole("dialog")).toBeNull();
   });
 });

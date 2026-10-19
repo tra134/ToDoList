@@ -84,14 +84,20 @@ describe("TodayPage (trang chủ)", () => {
 
     await user.type(screen.getByLabelText("Thêm task mới"), "Việc của hôm nay{Enter}");
 
-    expect(await screen.findByText("Việc của hôm nay")).toBeInTheDocument();
+    // Task xuất hiện cả ở trang chính lẫn sidebar -> scope trong trang.
+    const page = document.querySelector(".today-page");
+    expect(
+      await within(page as HTMLElement).findByText("Việc của hôm nay"),
+    ).toBeInTheDocument();
   });
 
-  it("trang chủ có sidebar + khối thống kê", () => {
+  it("trang chủ có sidebar việc hôm nay + taskbar (theme, thống kê)", () => {
     renderWithRouter(<App />, "/");
 
     expect(document.querySelector(".sidebar")).toBeInTheDocument();
-    expect(screen.getByLabelText("Thống kê công việc")).toBeInTheDocument();
+    expect(screen.getByLabelText("Danh sách việc hôm nay")).toBeInTheDocument();
+    expect(document.querySelector(".topbar")).toBeInTheDocument();
     expect(document.querySelector(".theme-toggle")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Thống kê" })).toBeInTheDocument();
   });
 });

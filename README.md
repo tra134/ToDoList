@@ -3,10 +3,13 @@
 App ToDoList học **TypeScript + React**: thêm/sửa/xoá task, lọc theo route,
 đặt deadline theo **múi giờ của máy bạn** và nhắc trước hạn (trong app +
 thông báo hệ thống). Giao diện **sáng/tối** (nền `back_ground_light.png` /
-`back_ground_dark.png`) với chế độ **auto theo giờ** (18h–6h là tối), layout
-**sidebar** gồm menu chính + **thống kê** (biểu đồ tròn + biểu đồ đường 7 ngày
-vẽ bằng SVG thuần), **màu kí hiệu + ghi chú** cho từng task, **phân trang**
-khi list dài. Dữ liệu lưu ở `localStorage`, không cần backend.
+`back_ground_dark.png`) với chế độ **auto theo giờ** (18h–6h là tối).
+Layout: **taskbar trên cùng** (menu điều hướng + nút Thông báo + nút **Thống kê**
++ nút sáng/tối) và **sidebar danh sách nhanh việc hôm nay**. Nút Thống kê mở
+**modal** với các **bar chart** (việc làm được / chưa làm được theo **hôm nay,
+tuần, tháng** + 7 ngày + 4 tuần) và **donut** tiến độ — tất cả vẽ bằng SVG thuần.
+Còn có **màu kí hiệu + ghi chú** cho từng task, **phân trang** khi list dài.
+Dữ liệu lưu ở `localStorage`, không cần backend.
 
 Xem đặc tả chi tiết từng phase trong [`plan.md`](./plan.md).
 
@@ -15,7 +18,7 @@ Xem đặc tả chi tiết từng phase trong [`plan.md`](./plan.md).
 ```bash
 npm install
 npm run dev        # chạy dev server
-npm run test:run   # chạy toàn bộ test (140 test)
+npm run test:run   # chạy toàn bộ test (164 test)
 npm run test       # chạy test ở chế độ watch
 npm run build      # build production (tsc + vite build)
 npm run lint       # oxlint
@@ -45,8 +48,8 @@ npm run lint       # oxlint
 | `/overdue` | Task quá hạn và chưa xong |
 | `*` | Trang 404 |
 
-Tất cả route lồng trong layout chung: **sidebar** (menu + thống kê +
-nút sáng/tối ở góc phải trên) + `ReminderToast`.
+Tất cả route lồng trong layout chung: **taskbar** trên cùng (menu + Thống kê +
+sáng/tối) và **sidebar** danh sách việc hôm nay + `ReminderToast`.
 
 ## Quy tắc múi giờ (quan trọng)
 
@@ -64,8 +67,8 @@ src/
 ├── constants/   STORAGE_KEY, TICK_MS, REMINDER_OPTIONS
 ├── utils/       hàm thuần: time, filterTasks, stats, normalizeTask, notify
 ├── hooks/       state + side-effect: useTasks, useLocalStorage, useNow, useReminders, useTheme
-├── layouts/     AppLayout (sidebar + ReminderToast + Outlet)
-├── components/  UI thuần (Sidebar, SidebarStats, ThemeToggle, Charts, TaskForm, TaskItem, ...)
+├── layouts/     AppLayout (Topbar + Sidebar + StatsPanel + ReminderToast + Outlet)
+├── components/  UI thuần (Topbar, Sidebar, StatsPanel, ThemeToggle, Charts, TaskForm, TaskItem, ...)
 ├── pages/       TodayPage (trang chủ), TaskPage (dùng chung 4 route), NotFoundPage
 └── test/        globalSetup (TZ), setup, factories, renderWithRouter
 ```

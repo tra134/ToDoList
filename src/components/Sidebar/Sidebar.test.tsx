@@ -1,79 +1,73 @@
-import { screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { screen, within } from "@testing-library/react";
+import { describe, expect, it } from "vitest";
+import { makeTask } from "../../test/factories";
 import { renderWithRouter } from "../../test/renderWithRouter";
 import { Sidebar } from "./Sidebar";
 
-beforeEach(() => {
-  window.localStorage.clear();
-});
+describe("Sidebar (danh sách nhanh việc hôm nay)", () => {
+  it("task rỗng -> trạng thái rỗng, không có danh sách", () => {
+    renderWithRouter(<Sidebar tasks={[]} now={Date.now()} />);
 
-describe("Sidebar", () => {
-  const setup = () =>
+    expect(screen.getByLabelText("Danh sách việc hôm nay")).toBeInTheDocument();
+    expect(screen.getByText("Không có việc cần làm hôm nay.")).toBeInTheDocument();
+    expect(document.querySelector(".sidebar-today__list")).toBeNull();
+  });
+
+  it("chỉ liệt kê task quá hạn + đến hạn hôm nay + chưa xếp lịch", () => {
+    const now = Date.now();
     renderWithRouter(
       <Sidebar
-        tasks={[]}
-        now={Date.now()}
-        theme="light"
-        themeMode="auto"
-        onToggleTheme={() => {}}
-        onSetThemeMode={() => {}}
+        tasks={[
+          makeTask({ id: "t1", title: "Hôm nay", dueAt: now + 3_600_000 }),
+          makeTask({ id: "o1", title: "Quá hạn", dueAt: now - 3_600_000 }),
+          makeTask({ id: "n1", title: "Chưa xếp lịch", dueAt: null }),
+          makeTask({ id: "f1", title: "Ngày mai", dueAt: now + 48 * 3_600_000 }),
+        ]}
+        now={now}
       />,
     );
 
-  it("đủ 5 link menu với href đúng", () => {
-    setup();
-
-    const nav = screen.getByRole("navigation", { name: "Menu chính" });
-    expect(nav).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Hôm nay" })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: "Tất cả task" })).toHaveAttribute(
-      "href",
-      "/tasks",
-    );
-    expect(screen.getByRole("link", { name: "Đang làm" })).toHaveAttribute(
-      "href",
-      "/active",
-    );
-    expect(screen.getByRole("link", { name: "Đã xong" })).toHaveAttribute(
-      "href",
-      "/completed",
-    );
-    expect(screen.getByRole("link", { name: "Quá hạn" })).toHaveAttribute(
-      "href",
-      "/overdue",
-    );
+    const scope = screen.getByLabelText("Danh sách việc hôm nay");
+    expect(within(scope).getByText("Hôm nay")).toBeInTheDocument();
+    expect(within(scope).getByText("Quá hạn")).toBeInTheDocument();
+    expect(within(scope).getByText("Chưa xếp lịch")).toBeInTheDocument();
+    expect(within(scope).queryByText("Ngày mai")).toBeNull();
+    expect(document.querySelector(".sidebar-today__count")).toHaveTextContent("3");
   });
 
-  it("route hiện tại có class active", () => {
+  it("task quá hạn có dot + giờ màu đỏ", () => {
+    const now = Date.now();
     renderWithRouter(
       <Sidebar
-        tasks={[]}
-        now={Date.now()}
-        theme="light"
-        themeMode="auto"
-        onToggleTheme={() => {}}
-        onSetThemeMode={() => {}}
+        tasks={[makeTask({ id: "o1", title: "Trễ deadline", dueAt: now - 3_600_000 })]}
+        now={now}
       />,
-      "/active",
     );
 
-    expect(screen.getByRole("link", { name: "Đang làm" })).toHaveClass("active");
-    expect(screen.getByRole("link", { name: "Hôm nay" })).not.toHaveClass("active");
+    expect(document.querySelector(".sidebar-today__dot--overdue")).not.toBeNull();
+    expect(screen.getByText("quá hạn 1 giờ")).toBeInTheDocument();
   });
 
-  it("có khối thống kê (donut) và nút sáng/tối ở góc phải trên", () => {
-    setup();
+  it("có task xong hôm nay -> hiện dòng 'Đã xong hôm nay: N'", () => {
+    const now = Date.now();
+    renderWithRouter(
+      <Sidebar
+        tasks={[
+          makeTask({ id: "x1", title: "Vừa xong", completed: true, completedAt: now - 60_000 }),
+          makeTask({ id: "x2", title: "Xong nốt", completed: true, completedAt: now - 120_000 }),
+        ]}
+        now={now}
+      />,
+    );
 
-    expect(screen.getByLabelText("Thống kê công việc")).toBeInTheDocument();
-    expect(document.querySelector(".donut")).toBeInTheDocument();
-    expect(screen.getByText("Hoàn thành 7 ngày qua")).toBeInTheDocument();
+    expect(screen.getByText(/Đã xong hôm nay/)).toBeInTheDocument();
+    expect(screen.getByText("2")).toBeInTheDocument();
+  });
 
-    // Nút theme nằm trong dòng đầu của sidebar (góc phải trên cùng)
-    const head = document.querySelector(".sidebar__head");
-    expect(head).not.toBeNull();
-    expect(head?.querySelector(".theme-toggle")).not.toBeNull();
-    expect(
-      screen.getByRole("button", { name: "Chuyển sang giao diện tối" }),
-    ).toBeInTheDocument();
+  it("sidebar không còn menu điều hướng (đã lên taskbar)", () => {
+    renderWithRouter(<Sidebar tasks={[]} now={Date.now()} />);
+
+    expect(screen.queryByRole("navigation")).toBeNull();
+    expect(document.querySelector(".theme-toggle")).toBeNull();
   });
 });

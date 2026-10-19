@@ -53,6 +53,36 @@ export function fromInputValue(v: string): number | null {
   return Number.isNaN(ts) ? null : ts;
 }
 
+/** Cộng ngày theo lịch địa phương (không dùng + 86_400_000 để né DST). */
+export function addDays(ts: number, days: number): number {
+  const d = new Date(ts);
+  d.setDate(d.getDate() + days);
+  return d.getTime();
+}
+
+/** 00:00:00.000 của ngày chứa `ts` (giờ địa phương). */
+export function startOfDay(ts: number): number {
+  const d = new Date(ts);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
+/** 00:00:00 của Thứ 2 trong tuần chứa `ts` (tuần bắt đầu = Thứ 2). */
+export function startOfWeek(ts: number): number {
+  const d = new Date(startOfDay(ts));
+  const sinceMonday = (d.getDay() + 6) % 7; // getDay(): 0=CN -> 0=Thứ 2
+  d.setDate(d.getDate() - sinceMonday);
+  return d.getTime();
+}
+
+/** 00:00:00 của ngày mùng 1 tháng chứa `ts`. */
+export function startOfMonth(ts: number): number {
+  const d = new Date(ts);
+  d.setDate(1);
+  d.setHours(0, 0, 0, 0);
+  return d.getTime();
+}
+
 /** Quá hạn: có deadline, chưa xong, đã vượt thời điểm hết hạn. */
 export function isOverdue(task: Task, now: number): boolean {
   return task.dueAt !== null && !task.completed && task.dueAt < now;

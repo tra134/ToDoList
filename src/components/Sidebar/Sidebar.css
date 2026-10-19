@@ -1,7 +1,7 @@
 .sidebar {
   display: flex;
   flex-direction: column;
-  gap: 1.1rem;
+  gap: 0.8rem;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -10,91 +10,107 @@
   animation: fade-up 0.3s ease both;
 }
 
-/* Dòng đầu: brand bên trái, nút sáng/tối GÓC PHẢI TRÊN CÙNG */
-.sidebar__head {
+.sidebar-today {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.sidebar-today__head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 
-.sidebar__brand {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 1.1rem;
+.sidebar-today__title {
+  font-size: 0.95rem;
   letter-spacing: -0.01em;
-  color: var(--text);
 }
 
-.sidebar__logo {
-  color: var(--primary);
-  flex-shrink: 0;
+.sidebar-today__count {
+  min-width: 1.5rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
 }
 
-.sidebar__nav {
+.sidebar-today__empty {
+  font-size: 0.8rem;
+  color: var(--muted);
+  padding: 0.4rem 0;
+}
+
+.sidebar-today__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
-  border-top: 1px solid var(--border);
-  padding-top: 0.8rem;
+  /* danh sách dài -> cuộn trong sidebar, không đẩy nội dung chính xuống */
+  max-height: 45vh;
+  overflow-y: auto;
 }
 
-.sidebar__link {
-  display: block;
-  padding: 0.5rem 0.7rem;
-  border-radius: var(--radius);
-  font-size: 0.9rem;
-  font-weight: 600;
+.sidebar-today__item {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  padding: 0.3rem 0.4rem;
+  border-radius: 8px;
+  background: var(--bg);
+  font-size: 0.8rem;
+}
+
+.sidebar-today__dot {
+  flex-shrink: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--primary);
+  transform: translateY(-1px);
+}
+
+.sidebar-today__dot--overdue {
+  background: var(--danger);
+}
+
+.sidebar-today__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sidebar-today__time {
+  flex-shrink: 0;
+  font-size: 0.68rem;
   color: var(--muted);
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition:
-    background 0.15s ease,
-    color 0.15s ease,
-    border-color 0.15s ease;
 }
 
-.sidebar__link:hover {
-  background: var(--bg);
-  color: var(--text);
+.sidebar-today__time--overdue {
+  color: var(--danger);
 }
 
-.sidebar__link.active {
-  background: var(--bg);
-  color: var(--primary);
-  border-left-color: var(--primary);
+.sidebar-today__done {
+  border-top: 1px dashed var(--border);
+  padding-top: 0.6rem;
+  font-size: 0.78rem;
+  color: var(--muted);
 }
 
-.sidebar__notify {
-  border-top: 1px solid var(--border);
-  padding-top: 0.8rem;
+.sidebar-today__done strong {
+  color: var(--success);
 }
 
-/* ---------- Mobile: sidebar xếp lên trên ---------- */
 @media (max-width: 860px) {
-  .sidebar {
-    gap: 0.9rem;
-  }
-
-  .sidebar__nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-  }
-
-  .sidebar__link {
-    border-left: none;
-    border: 1px solid var(--border);
-    padding: 0.35rem 0.7rem;
-    font-size: 0.82rem;
-  }
-
-  .sidebar__link.active {
-    border-color: var(--primary);
-  }
-
-  .side-stats__line {
-    display: none; /* bớt chiều cao khi màn nhỏ */
+  .sidebar-today__list {
+    max-height: none;
   }
 }

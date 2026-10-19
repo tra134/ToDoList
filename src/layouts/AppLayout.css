@@ -1,16 +1,25 @@
 .layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout__body {
+  flex: 1;
+  width: 100%;
   max-width: 1120px;
   margin: 0 auto;
-  padding: 1.4rem 1rem 3rem;
+  padding: 1.2rem 1rem 3rem;
   display: grid;
-  grid-template-columns: 300px minmax(0, 1fr);
+  grid-template-columns: 290px minmax(0, 1fr);
   gap: 1.2rem;
   align-items: start;
 }
 
+/* Dưới taskbar (sticky ~4rem) nên sidebar bám sát mép trên của vùng nội dung */
 .layout .sidebar {
   position: sticky;
-  top: 1.4rem;
+  top: 4.4rem;
 }
 
 .layout__main {
@@ -21,7 +30,7 @@
 }
 
 @media (max-width: 860px) {
-  .layout {
+  .layout__body {
     grid-template-columns: 1fr;
     padding-top: 1rem;
   }

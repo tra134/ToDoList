@@ -1,0 +1,132 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 1rem;
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow);
+  animation: fade-up 0.3s ease both;
+}
+
+.topbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.topbar__logo {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.topbar__nav {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.topbar__link {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--muted);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+}
+
+.topbar__link:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.topbar__link.active {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.topbar__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* Cờ thông báo nhỏ gọn trên thanh trên */
+.topbar__notify {
+  display: flex;
+  align-items: center;
+}
+
+.topbar__notify .notify-hint {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--muted);
+  max-width: 12rem;
+}
+
+.topbar__notify .notify-hint--ok {
+  color: var(--success);
+}
+
+.topbar__stats {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--primary);
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.topbar__stats:hover {
+  background: var(--primary-dark);
+}
+
+.topbar__stats:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Màn nhỏ: nav xuống hàng thứ hai, cờ thông báo ẩn bớt cho đỡ chật */
+@media (max-width: 860px) {
+  .topbar {
+    flex-wrap: wrap;
+    gap: 0.5rem 0.8rem;
+  }
+
+  .topbar__nav {
+    order: 3;
+    width: 100%;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.45rem;
+  }
+
+  .topbar__notify .notify-hint {
+    display: none;
+  }
+}

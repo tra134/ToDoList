@@ -2,8 +2,8 @@ import { Footer } from "../components/Footer/Footer";
 import { TaskForm } from "../components/TaskForm/TaskForm";
 import { TaskList } from "../components/TaskList/TaskList";
 import type { UseTasksResult } from "../hooks/useTasks";
-import { filterTasks } from "../utils/filterTasks";
-import { getUserTimeZone, isOverdue, isSameDay } from "../utils/time";
+import { filterTasks, selectDoneToday, selectTodoToday } from "../utils/filterTasks";
+import { getUserTimeZone } from "../utils/time";
 
 interface TodayPageProps extends UseTasksResult {
   now: number;
@@ -34,17 +34,9 @@ export function TodayPage({
   setMeta,
 }: TodayPageProps) {
   const active = filterTasks(tasks, "active", now);
-  // Quá hạn (hạn đã qua) + đến hạn hôm nay + chưa xếp lịch.
-  // Sắp xếp theo hạn tăng dần: quá hạn đứng đầu, task chưa có hạn đứng cuối.
-  const todoToday = active
-    .filter(
-      (t) => t.dueAt === null || isOverdue(t, now) || isSameDay(t.dueAt, now),
-    )
-    .sort((a, b) => (a.dueAt ?? Number.MAX_SAFE_INTEGER) - (b.dueAt ?? Number.MAX_SAFE_INTEGER));
-
-  const doneToday = tasks.filter(
-    (t) => t.completed && t.completedAt !== null && isSameDay(t.completedAt, now),
-  );
+  // Quá hạn + đến hạn hôm nay + chưa xếp lịch (sắp theo hạn tăng dần).
+  const todoToday = selectTodoToday(tasks, now);
+  const doneToday = selectDoneToday(tasks, now);
 
   const remaining = active.length;
   const overdue = filterTasks(tasks, "overdue", now).length;

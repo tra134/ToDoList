@@ -12,7 +12,7 @@ import { TodayPage } from "./pages/TodayPage";
  * State (useTasks), reminder (useReminders) và theme (useTheme) sống ở đây —
  * đặt trên <Routes> để chuyển route không mất banner nhắc, theme giữ nguyên.
  *
- * Route lồng trong AppLayout (sidebar + <Outlet/>):
+ * Route lồng trong AppLayout (taskbar + sidebar việc hôm nay + <Outlet/>):
  * - "/"        : trang chủ — task cần làm trong ngày
  * - "/tasks"   : tất cả task, "/active|/completed|/overdue" : lọc còn lại
  */
