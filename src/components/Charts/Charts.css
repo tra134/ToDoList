@@ -1,76 +1,4 @@
-.stats {
-  margin-bottom: 1.1rem;
-  animation: fade-up 0.35s ease both;
-}
-
-.stats__cards {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.6rem;
-  margin-bottom: 0.6rem;
-}
-
-.stat-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.7rem 0.8rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-  box-shadow: var(--shadow);
-}
-
-.stat-card__value {
-  font-size: 1.35rem;
-  line-height: 1.1;
-  color: var(--text);
-}
-
-.stat-card__label {
-  font-size: 0.72rem;
-  color: var(--muted);
-}
-
-.stats__charts {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 0.6rem;
-}
-
-.stats__card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 0.85rem 0.9rem;
-  box-shadow: var(--shadow);
-}
-
-.stats__card-title {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: var(--muted);
-  margin-bottom: 0.6rem;
-}
-
-.stats__donut-row {
-  display: flex;
-  align-items: center;
-  gap: 0.9rem;
-  flex-wrap: wrap;
-}
-
-.stats__legend {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  font-size: 0.8rem;
-  color: var(--text);
-}
-
+/* ---------- Legend chung cho donut ---------- */
 .legend-dot {
   display: inline-block;
   width: 0.6rem;
@@ -164,15 +92,5 @@
 @keyframes chart-draw {
   to {
     stroke-dashoffset: 0;
-  }
-}
-
-@media (max-width: 560px) {
-  .stats__cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .stats__charts {
-    grid-template-columns: 1fr;
   }
 }

@@ -1,60 +1,48 @@
 import { Route, Routes } from "react-router-dom";
-import { NotificationButton } from "./components/NotificationButton/NotificationButton";
-import { ReminderToast } from "./components/ReminderToast/ReminderToast";
 import { useNow } from "./hooks/useNow";
 import { useReminders } from "./hooks/useReminders";
 import { useTasks } from "./hooks/useTasks";
+import { useTheme } from "./hooks/useTheme";
+import { AppLayout } from "./layouts/AppLayout";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { TaskPage } from "./pages/TaskPage";
+import { TodayPage } from "./pages/TodayPage";
 
 /**
- * State (useTasks) và reminder (useReminders) sống ở đây — trên <Routes>
- * để chuyển route không mất banner nhắc, việc kiểm tra deadline không gián đoạn.
+ * State (useTasks), reminder (useReminders) và theme (useTheme) sống ở đây —
+ * đặt trên <Routes> để chuyển route không mất banner nhắc, theme giữ nguyên.
+ *
+ * Route lồng trong AppLayout (sidebar + <Outlet/>):
+ * - "/"        : trang chủ — task cần làm trong ngày
+ * - "/tasks"   : tất cả task, "/active|/completed|/overdue" : lọc còn lại
  */
 export default function App() {
   const taskApi = useTasks();
   const now = useNow();
   const { alerts, dismiss } = useReminders(taskApi.tasks, now, taskApi.markReminded);
+  const { mode, theme, setMode, toggle } = useTheme(now);
 
   return (
-    <div className="app">
-      <header className="app__header">
-        <h1 className="app__title">
-          <svg
-            className="app__logo"
-            width="26"
-            height="26"
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-            <rect
-              x="2"
-              y="2"
-              width="20"
-              height="20"
-              rx="6"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            />
-            <path
-              d="M7 12.5l3.2 3.2L17 9"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2.4"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          ToDoList
-        </h1>
-        <NotificationButton />
-      </header>
-
-      <ReminderToast alerts={alerts} dismiss={dismiss} />
-
-      <Routes>
-        <Route path="/" element={<TaskPage filter="all" now={now} {...taskApi} />} />
+    <Routes>
+      <Route
+        element={
+          <AppLayout
+            tasks={taskApi.tasks}
+            now={now}
+            theme={theme}
+            themeMode={mode}
+            onToggleTheme={toggle}
+            onSetThemeMode={setMode}
+            alerts={alerts}
+            onDismissAlert={dismiss}
+          />
+        }
+      >
+        <Route path="/" element={<TodayPage now={now} {...taskApi} />} />
+        <Route
+          path="/tasks"
+          element={<TaskPage filter="all" now={now} {...taskApi} />}
+        />
         <Route
           path="/active"
           element={<TaskPage filter="active" now={now} {...taskApi} />}
@@ -68,7 +56,7 @@ export default function App() {
           element={<TaskPage filter="overdue" now={now} {...taskApi} />}
         />
         <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </div>
+      </Route>
+    </Routes>
   );
 }

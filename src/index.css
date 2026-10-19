@@ -42,6 +42,8 @@ textarea {
 
 /* ---------- Biến màu: gam sáng, một màu chủ đạo, không pha trộn loè loẹt ---------- */
 :root {
+  color-scheme: light;
+
   --bg: #f5f6fa;
   --surface: #ffffff;
   --text: #232833;
@@ -60,50 +62,87 @@ textarea {
 
   --radius: 12px;
   --shadow: 0 1px 3px rgb(15 23 42 / 7%);
+
+  /* Nền: back_ground_light.png + lớp phủ trắng mỏng cho gam sáng */
+  --bg-overlay: rgb(247 248 252 / 82%), rgb(247 248 252 / 88%);
+  --bg-image: url("/back_ground_light.png");
 }
 
-/* ---------- Nền: ảnh background.png + lớp phủ trắng mỏng cho gam sáng ---------- */
+/* ---------- Biến màu chế độ tối (document.documentElement.dataset.theme) ---------- */
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #12141b;
+  --surface: #1b1f2a;
+  --text: #e7e9f2;
+  --muted: #9aa1b5;
+  --border: #2b3040;
+
+  --primary: #6d8dff;
+  --primary-dark: #8aa4ff;
+
+  --danger: #f97066;
+  --danger-bg: #3a1f1e;
+  --warning: #fdba74;
+  --warning-bg: #3a2c17;
+  --success: #37d399;
+  --badge-normal-bg: #242937;
+
+  --shadow: 0 1px 3px rgb(0 0 0 / 45%);
+
+  /* Nền: back_ground_dark.png + lớp phủ tối mỏng */
+  --bg-overlay: rgb(14 16 22 / 84%), rgb(14 16 22 / 90%);
+  --bg-image: url("/back_ground_dark.png");
+}
+
 body {
   background-color: var(--bg);
-  background-image: linear-gradient(rgb(247 248 252 / 82%), rgb(247 248 252 / 88%)),
-    url("/background.png");
+  background-image: linear-gradient(var(--bg-overlay)), var(--bg-image);
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
   color: var(--text);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
-/* ---------- Layout căn giữa ---------- */
-.app {
-  max-width: 660px;
-  margin: 0 auto;
-  padding: 1.6rem 1rem 3rem;
-}
-
-.app__header {
+/* ---------- Trang nội dung ---------- */
+.task-page,
+.today-page {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 1.2rem;
 }
 
-.app__title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1.45rem;
+.task-page__title,
+.today-page__title {
+  font-size: 1.3rem;
   letter-spacing: -0.01em;
-  color: var(--text);
 }
 
-.app__logo {
-  color: var(--primary);
+.today-page__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.8rem;
+  flex-wrap: wrap;
 }
 
-.task-page {
-  display: block;
+.today-page__date {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.today-page__done {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.today-page__subtitle {
+  font-size: 0.95rem;
+  color: var(--muted);
 }
 
 .not-found {

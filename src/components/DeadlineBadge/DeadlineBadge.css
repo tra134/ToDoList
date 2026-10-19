@@ -27,7 +27,7 @@
 }
 
 .deadline-badge--overdue {
-  background: var(--danger-bg);
+  background: var(--danger);
   color: #fff;
   border-color: var(--danger);
 }

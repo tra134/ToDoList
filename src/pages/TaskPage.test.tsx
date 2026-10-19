@@ -1,4 +1,4 @@
-import { fireEvent, screen } from "@testing-library/react";
+import { fireEvent, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, describe, expect, it } from "vitest";
 import { STORAGE_KEY } from "../constants/config";
@@ -70,8 +70,11 @@ describe("TaskPage (integration)", () => {
 
     renderWithRouter(<App />, "/active");
 
-    expect(screen.getByText("Chưa xong")).toBeInTheDocument();
-    expect(screen.queryByText("Đã xong rồi")).toBeNull();
+    // Scope trong vùng nội dung trang (sidebar cũng có nhãn "Chưa xong").
+    const page = document.querySelector(".task-page");
+    expect(page).not.toBeNull();
+    expect(within(page as HTMLElement).getByText("Chưa xong")).toBeInTheDocument();
+    expect(within(page as HTMLElement).queryByText("Đã xong rồi")).toBeNull();
   });
 
   it("Footer đếm đúng task còn lại và task quá hạn", () => {

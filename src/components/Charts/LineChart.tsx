@@ -1,3 +1,5 @@
+import "./Charts.css";
+
 export interface LinePoint {
   label: string;
   value: number;

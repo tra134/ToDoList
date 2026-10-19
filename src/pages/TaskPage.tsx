@@ -1,6 +1,4 @@
-import { FilterNav } from "../components/FilterNav/FilterNav";
 import { Footer } from "../components/Footer/Footer";
-import { StatsDashboard } from "../components/StatsDashboard/StatsDashboard";
 import { TaskForm } from "../components/TaskForm/TaskForm";
 import { TaskList } from "../components/TaskList/TaskList";
 import type { UseTasksResult } from "../hooks/useTasks";
@@ -12,7 +10,15 @@ interface TaskPageProps extends UseTasksResult {
   now: number;
 }
 
-/** Dùng chung cho cả 4 route, khác nhau ở prop `filter`. */
+/** Tiêu đề trang theo bộ lọc (không trùng label menu sidebar). */
+const TITLES: Record<Filter, string> = {
+  all: "Tất cả task",
+  active: "Task đang làm",
+  completed: "Task đã xong",
+  overdue: "Quá hạn",
+};
+
+/** Dùng chung cho các route /tasks, /active, /completed, /overdue. */
 export function TaskPage({
   filter,
   now,
@@ -30,9 +36,8 @@ export function TaskPage({
 
   return (
     <main className="task-page">
-      <StatsDashboard tasks={tasks} now={now} />
+      <h2 className="task-page__title">{TITLES[filter]}</h2>
       <TaskForm onAdd={addTask} />
-      <FilterNav />
       <TaskList
         tasks={visible}
         now={now}

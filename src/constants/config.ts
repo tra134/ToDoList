@@ -2,6 +2,8 @@ import type { TaskColorId } from "../types/task";
 
 export const STORAGE_KEY = "todolist.tasks";
 
+export const THEME_KEY = "todolist.theme"; // "auto" | "light" | "dark"
+
 export const TICK_MS = 30_000; // kiểm tra deadline mỗi 30 giây
 
 export const REMINDER_OPTIONS = [0, 5, 10, 30, 60, 1440] as const;

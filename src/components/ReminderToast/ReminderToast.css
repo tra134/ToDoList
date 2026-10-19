@@ -67,7 +67,7 @@
 }
 
 .toast__close:hover {
-  background: rgb(0 0 0 / 10%);
+  background: rgb(128 128 128 / 25%);
 }
 
 .toast__close:focus-visible {
