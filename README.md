@@ -1,4 +1,4 @@
-# 📝 ToDoList (React + TypeScript)
+# ToDoList (React + TypeScript)
 
 App ToDoList học **TypeScript + React**: thêm/sửa/xoá task, lọc theo route,
 đặt deadline theo **múi giờ của máy bạn** và nhắc trước hạn (trong app +
@@ -11,7 +11,6 @@ tuần, tháng** + 7 ngày + 4 tuần) và **donut** tiến độ — tất cả
 Còn có **màu kí hiệu + ghi chú** cho từng task, **phân trang** khi list dài.
 Dữ liệu lưu ở `localStorage`, không cần backend.
 
-Xem đặc tả chi tiết từng phase trong [`plan.md`](./plan.md).
 
 ## Chạy
 
@@ -72,8 +71,6 @@ src/
 ├── pages/       TodayPage (trang chủ), TaskPage (dùng chung 4 route), NotFoundPage
 └── test/        globalSetup (TZ), setup, factories, renderWithRouter
 ```
-
-> Quy tắc: tầng trên import tầng dưới, **không import ngược**.
 
 ## Giới hạn cần biết
 
